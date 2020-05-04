@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Absolute path of script
+SCRIPT=$(readlink -f "$0")
+# Absolute directory of script
+ROOT="$(dirname $SCRIPT)/.."
+
+# Launch RSD
+#export NODE_NO_WARNINGS=1
+"$ROOT/node_modules/.bin/ts-node" --dir=$ROOT "$ROOT/src/cli.ts" $*
