@@ -11,7 +11,7 @@ export class canOutput {
     this.output.write(txt);
   }
 
-  writeln(txt: string) {
+  writeln(txt: string = '') {
     this.write(txt + '\n');
   }
 }
