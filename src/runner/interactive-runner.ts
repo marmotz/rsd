@@ -8,7 +8,7 @@ export class InteractiveRunner extends AbstractRunner {
   }
 
   async promptCommand(): Promise<string> {
-    this.writeln(chalk.green('Type command or ENTER to quit'));
+    this.writeln(chalk.green('Type command or ENTER or CTRL-C to quit'));
     const response = await inquirer.prompt([{
       name: 'command',
       prefix: '',
@@ -26,7 +26,7 @@ export class InteractiveRunner extends AbstractRunner {
       this.writeln('');
 
       if (command) {
-        this.rsd.getRunner(command).run();
+        await this.rsd.getRunner(command).run();
       }
     } while(command);
   }
