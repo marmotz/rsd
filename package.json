@@ -1,13 +1,14 @@
 {
   "name": "rsd",
   "version": "0.2.0",
-  "description": "",
+  "description": "Run command in sub directories",
   "main": "src/cli.ts",
   "bin": {
     "rsd": "bin/rsd"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc mocha",
+    "test:watch": "mocha --watch"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,7 @@
     "cli"
   ],
   "author": "Renaud LITTOLFF <rlittolff@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "@types/inquirer": "^6.5.0",
     "@types/node": "^13.13.4",
@@ -26,5 +27,19 @@
     "node-pty": "^0.9.0",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/sinon": "^9.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2",
+    "nyc": "^15.0.1",
+    "sinon": "^9.0.2"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ]
   }
 }

@@ -8,28 +8,30 @@ export class InternalCommandsRunner extends AbstractRunner {
     return !!this.options.command && this.options.command.substr(0, 1) === ':';
   }
 
-  run() {
-    const options = Cop.parse(this.options.command)
+  run(_command: string | void) {
+    const command = _command || this.options.command;
+
+    const options = new Cop()
       .option('help', {
-        flags      : [ ':help' ],
-        description: 'Internal commands help',
+        flags: [ ':help' ],
+        description: 'Internal commands help'
       })
       .option('excludeDirs', {
-        flags      : [ ':e', ':excludeDirs' ],
-        type       : OptionType.array,
-        subType    : OptionSubType.string,
-        nArgs      : 1,
+        flags: [ ':e', ':excludeDirs' ],
+        type: OptionType.array,
+        subType: OptionSubType.string,
+        nArgs: 1,
         description: 'Exclude directory',
-        conflict   : [ 'includeDirs' ],
+        conflict: [ 'includeDirs' ]
       })
       .option('includeDirs', {
-        flags      : [ ':i', ':includeDirs' ],
-        type       : OptionType.array,
-        subType    : OptionSubType.string,
-        nArgs      : 1,
-        description: 'Include directory',
+        flags: [ ':i', ':includeDirs' ],
+        type: OptionType.array,
+        subType: OptionSubType.string,
+        nArgs: 1,
+        description: 'Include directory'
       })
-      .getOptions()
+      .parse(command)
     ;
 
     if (options.includeDirs) {
@@ -42,6 +44,8 @@ export class InternalCommandsRunner extends AbstractRunner {
       this.options.includeDirs = [];
 
       this.writeln(chalk.yellow('Set exclude dirs to ' + JSON.stringify(this.options.excludeDirs)));
+    } else {
+      this.writeln(chalk.red('Unknown ' + command + ' command'));
     }
   }
 }

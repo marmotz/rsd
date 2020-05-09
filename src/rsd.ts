@@ -11,74 +11,35 @@ export class Rsd extends canOutput {
   options: Options;
   private runners: { [key: string]: Runnable } = {};
 
-  constructor(argv: string[] | undefined) {
+  constructor(argv: string[] | void) {
     super();
 
-    const options = Cop.parse(argv)
-      // .config({
-      //   forceOptionAtStart: true,
-      // })
+    const options = new Cop()
       .option('excludeDirs', {
-        flags      : [ '-e', '--exclude-dirs' ],
-        type       : OptionType.array,
-        subType    : OptionSubType.string,
-        nArgs      : 1,
+        flags: [ '-e', '--exclude-dirs' ],
+        type: OptionType.array,
+        subType: OptionSubType.string,
+        nArgs: 1,
         description: 'Exclude directory',
-        conflict   : [ 'includeDirs' ],
+        conflict: [ 'includeDirs' ]
       })
       .option('includeDirs', {
-        flags      : [ '-i', '--include-dirs' ],
-        type       : OptionType.array,
-        subType    : OptionSubType.string,
-        nArgs      : 1,
-        description: 'Include directory',
+        flags: [ '-i', '--include-dirs' ],
+        type: OptionType.array,
+        subType: OptionSubType.string,
+        nArgs: 1,
+        description: 'Include directory'
       })
-      .getOptions()
+      .parse(argv)
     ;
-    // console.log(options);
-    // process.exit();
 
-    // const options = yargs
-    //   .version(pkg.version)
-    //   .detectLocale(false)
-    //   .command({
-    //     command: 'titi',
-    //     describe: 'Execute this command in all sub-directories.',
-    //     handler: (argv) => {
-    //       console.log('titi !!!!');
-    //     }
-    //   })
-    //   .parserConfiguration({
-    //     'halt-at-non-option': true,
-    //   })
-    // .option('exclude-dirs', {
-    //   alias   : 'e',
-    //   describe: 'exclude directory',
-    //   type    : 'string',
-    // })
-    // .option('include-dirs', {
-    //   alias   : 'i',
-    //   describe: 'include directory',
-    //   type    : 'string',
-    // })
-    // .conflicts('exclude-dirs', 'include-dirs')
-    // .command('[command...]', 'Execute this command in all sub-directories.')
-    //   .demandCommand()
-    //   .help()
-    //   // .parse(argv)
-    //   .argv
-    // ;
-
-    // console.log(process.argv, options);
-    // process.exit()
-    //
     this.options = new Options(options);
 
     this.loadRunners();
   }
 
   getRunner(command: string | void): Runnable {
-    if (command) {
+    if (command !== undefined) {
       this.options.command = command;
     }
 
@@ -93,9 +54,9 @@ export class Rsd extends canOutput {
 
   loadRunners() {
     this.runners = {
-      SubDirectoryRunner    : new SubDirectoryRunner(this),
-      InteractiveRunner     : new InteractiveRunner(this),
-      InternalCommandsRunner: new InternalCommandsRunner(this),
+      SubDirectoryRunner: new SubDirectoryRunner(this),
+      InteractiveRunner: new InteractiveRunner(this),
+      InternalCommandsRunner: new InternalCommandsRunner(this)
     };
   }
 

@@ -1,7 +1,7 @@
 export enum OptionType {
-  string  = 'string',
+  string = 'string',
   boolean = 'boolean',
-  array   = 'array'
+  array = 'array'
 }
 
 export enum OptionSubType {

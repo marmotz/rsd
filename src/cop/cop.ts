@@ -1,105 +1,103 @@
 import { CopOption, Option, OptionType } from './option';
-import { Configuration } from './configuration';
 
+// Cli Option Parser
 export class Cop {
-  private options: { [name: string]: Option } = {};
-  // private configuration: Configuration;
+  private _argv: string[] = [];
+  private _options: { [name: string]: Option } = {};
+  private _parsed: { [name: string]: any } = {};
 
-  constructor(private argv: string[]) {
-    // this.configuration = {
-    //   forceOptionAtStart: false
-    // } as Configuration;
+  constructor() {
   }
 
-  public static parse(args: string[] | string | undefined = undefined): Cop {
-    let argv: string[] = [];
+  get options(): { [name: string]: Option } {
+    return this._options;
+  }
 
-    if (args === null) {
-      argv = [ ...process.argv.slice(2) ];
+  get argv(): string[] {
+    return this._argv;
+  }
+
+  option(name: string, option: CopOption): Cop {
+    this._options[name] = {
+      // default values
+      type: OptionType.boolean,
+      nArgs: 0,
+      ...option
+    } as Option;
+
+    return this;
+  }
+
+  parse(args: string[] | string | void): { [name: string]: any } {
+    if (args === undefined) {
+      this._argv = [ ...process.argv.slice(2) ];
     } else if (typeof args === 'string') {
-      argv = args.split(' ');
-    } else if (args instanceof Array) {
-      argv = [ ...args ];
+      this._argv = args.split(' ');
+    } else {
+      this._argv = [ ...args ];
     }
 
-    return new Cop(argv);
-  }
+    this._parsed = {};
 
-  // public config(configurations: Configuration) {
-  //   this.configuration = Object.assign(
-  //     this.configuration,
-  //     configurations,
-  //   );
-  //
-  //   return this;
-  // }
+    for (let i = 0; i < this._argv.length; i++) {
+      const result = this.parseArg(i);
 
-  public getOptions() {
-    const options: { [key: string]: any } = {};
-
-    const argv = this.argv;
-
-    for (let i = 0; i < argv.length; i++) {
-      const arg = argv[i];
-
-      let optionFound = false;
-
-      for (let [ name, option ] of Object.entries(this.options)) {
-        if (option.flags.indexOf(arg) !== -1) {
-          if (option.nArgs > 0) {
-            let value = argv.slice(i + 1, i + 1 + option.nArgs);
-
-            if (option.type === OptionType.array) {
-              if (!options[name]) {
-                options[name] = [];
-              }
-
-              options[name] = options[name].concat(value);
-            } else if (option.type === OptionType.string) {
-              options[name] = value;
-            }
-
-            i = i + option.nArgs;
-          } else {
-            options[name] = true;
-          }
-
-          optionFound = true;
-        }
-      }
-
-      if (!optionFound) {
-        options._ = argv.slice(i);
+      if (result === false) {
+        this._parsed._ = this._argv.slice(i);
 
         break;
+      } else {
+        i = result;
       }
     }
 
-    for (let [ name, value ] of Object.entries(options)) {
+    this.checkConflict();
+
+    return this._parsed;
+  }
+
+  private checkConflict() {
+    for (let name of Object.keys(this._parsed)) {
       if (name === '_') {
         continue;
       }
 
-      for (let conflict of this.options[name].conflict || []) {
-        if (options[conflict]) {
+      for (let conflict of this._options[name].conflict || []) {
+        if (this._parsed[conflict]) {
           throw new Error(`You can't use ${name} and ${conflict} options together.`);
         }
       }
     }
-
-    return options;
   }
 
-  public option(name: string, option: CopOption): Cop {
-    this.options[name] = Object.assign(
-      // default values
-      {
-        type: OptionType.boolean,
-        nArgs: 0
-      },
-      option
-    ) as Option;
+  private parseArg(argIndex: number): number | false {
+    let optionFound = false;
+    const arg = this._argv[argIndex];
 
-    return this;
+    for (let [ name, option ] of Object.entries(this._options)) {
+      if (option.flags.indexOf(arg) !== -1) {
+        if (option.nArgs > 0) {
+          let value = this._argv.slice(argIndex + 1, argIndex + 1 + option.nArgs);
+
+          if (option.type === OptionType.array) {
+            if (!this._parsed[name]) {
+              this._parsed[name] = [];
+            }
+
+            this._parsed[name] = this._parsed[name].concat(value);
+          } else if (option.type === OptionType.string) {
+            this._parsed[name] = value.join(' ');
+          }
+
+          argIndex = argIndex + option.nArgs;
+        } else {
+          this._parsed[name] = true;
+        }
+
+        optionFound = true;
+      }
+    }
+
+    return optionFound ? argIndex : false;
   }
 }
