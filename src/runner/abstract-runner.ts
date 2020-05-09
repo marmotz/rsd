@@ -1,10 +1,11 @@
 import { Runnable } from './runnable';
 import { canOutput } from '../output/can-output';
 import { Rsd } from '../rsd';
+import { WriteStream } from 'tty';
 
-export abstract class AbstractRunner extends canOutput implements Runnable{
-  constructor(protected rsd: Rsd) {
-    super();
+export abstract class AbstractRunner extends canOutput implements Runnable {
+  constructor(protected rsd: Rsd, output: WriteStream | void) {
+    super(output);
   }
 
   get options() {
@@ -13,5 +14,5 @@ export abstract class AbstractRunner extends canOutput implements Runnable{
 
   abstract isRunnable(): boolean;
 
-  abstract run(): void;
+  abstract run(command: string | void): void;
 }

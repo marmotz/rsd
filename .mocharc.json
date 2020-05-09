@@ -1,0 +1,11 @@
+{
+  "diff": true,
+  "extension": [ "ts" ],
+  "package": "./package.json",
+  "spec": [
+    "src/**/*.spec.ts"
+  ],
+  "reporter": "list",
+  "require": "ts-node/register",
+  "ui": "bdd"
+}

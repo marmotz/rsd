@@ -1,4 +1,5 @@
 export interface Runnable {
   isRunnable(): boolean;
-  run(): void;
+
+  run(command: string | void): void;
 }

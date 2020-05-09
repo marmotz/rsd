@@ -13,7 +13,9 @@ export class SubDirectoryRunner extends AbstractRunner {
     return !!this.options.command && this.options.command.substr(0, 1) !== ':';
   }
 
-  async run() {
+  async run(_command: string | void) {
+    const command = _command || this.options.command;
+
     const includeDirs = this.options.includeDirs || readdirSync('./');
 
     const responses: { [key: string]: PtyResponse } = {};
@@ -29,7 +31,7 @@ export class SubDirectoryRunner extends AbstractRunner {
       }
 
       const promise = new Promise<PtyResponse>((resolve) => {
-        this.executeCommand(resolve, dir);
+        this.executeCommand(command, resolve, dir);
       });
 
       chain = chain.then(() => {
@@ -45,7 +47,15 @@ export class SubDirectoryRunner extends AbstractRunner {
     });
   }
 
-  displaySummary(responses: { [key: string]: PtyResponse }) {
+  private displayOutput(response: PtyResponse) {
+    for (let line of response.lines) {
+      this.writeln(line);
+    }
+
+    this.writeln();
+  }
+
+  private displaySummary(responses: { [key: string]: PtyResponse }) {
     const length = Object.keys(responses).length;
     const summaryTitle = `Executed in ${length} ${length > 1 ? 'directories' : 'directory'} :`;
 
@@ -72,18 +82,14 @@ export class SubDirectoryRunner extends AbstractRunner {
     this.writeln('');
   }
 
-  displayOutput(response: PtyResponse) {
-    for (let line of response.lines) {
-      this.writeln(line);
-    }
-  }
-
-  executeCommand(resolve: (response: PtyResponse) => void, dir: string) {
+  private executeCommand(command: string, resolve: (response: PtyResponse) => void, dir: string) {
     let output = '';
 
+    let shell = (process.env.SHELL || 'bash').split(' ');
+
     const ptyProcess = spawn(
-      process.env.SHELL || 'bash',
-      [],
+      shell[0],
+      shell.slice(1),
       {
         name: 'xterm-256color',
         cols: process.stdout.columns,
@@ -107,7 +113,7 @@ export class SubDirectoryRunner extends AbstractRunner {
       });
     });
 
-    ptyProcess.write(this.options.command + '\r');
+    ptyProcess.write(command + '\r');
     ptyProcess.write('exit $?\r');
   }
 }
