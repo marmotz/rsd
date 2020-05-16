@@ -59,10 +59,10 @@ describe('SubDirectoryRunner', () => {
 
       await runner.run();
       expect(writed.split('\n')).to.be.deep.equal([
-        '$ls -1\r',
+        '$ ls -1\r',
         'bar.txt\r',
         '',
-        '$ls -1\r',
+        '$ ls -1\r',
         'foo.txt\r',
         'foobar.txt\r',
         '',
@@ -84,10 +84,10 @@ describe('SubDirectoryRunner', () => {
 
       await runner.run();
       expect(writed.split('\n')).to.be.deep.equal([
-        '$foo\r',
+        '$ foo\r',
         'bash: foo: command not found\r',
         '',
-        '$foo\r',
+        '$ foo\r',
         'bash: foo: command not found\r',
         '',
         '',
@@ -108,10 +108,10 @@ describe('SubDirectoryRunner', () => {
 
       await runner.run();
       expect(writed.split('\n')).to.be.deep.equal([
-        '$ls -1 foo*.txt\r',
+        '$ ls -1 foo*.txt\r',
         'ls: cannot access \'foo*.txt\': No such file or directory\r',
         '',
-        '$ls -1 foo*.txt\r',
+        '$ ls -1 foo*.txt\r',
         'foo.txt\r',
         'foobar.txt\r',
         '',

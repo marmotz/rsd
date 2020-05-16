@@ -81,10 +81,10 @@ describe('InteractiveRunner', () => {
       expect(written.split('\n')).to.be.deep.equal([
         '\u001b[32mType command or ENTER or CTRL-C to quit\u001b[39m',
         '',
-        '$ls -1\r',
+        '$ ls -1\r',
         'bar.txt\r',
         '',
-        '$ls -1\r',
+        '$ ls -1\r',
         'foo.txt\r',
         'foobar.txt\r',
         '',

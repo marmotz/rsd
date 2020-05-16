@@ -113,7 +113,9 @@ export class SubDirectoryRunner extends AbstractRunner {
       });
     });
 
-    ptyProcess.write(command + '\r');
-    ptyProcess.write('exit $?\r');
+    // add a space before commands because, with "histignorespace" shell option,
+    // this command will not be saved in history
+    ptyProcess.write(' ' + command + '\r');
+    ptyProcess.write(' exit $?\r');
   }
 }
