@@ -20,22 +20,22 @@
   "author": "Renaud LITTOLFF <rlittolff@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@types/inquirer": "^6.5.0",
-    "@types/node": "^13.13.4",
-    "chalk": "^4.0.0",
-    "inquirer": "^7.1.0",
+    "@types/inquirer": "^7.3.1",
+    "@types/node": "^14.10.2",
+    "chalk": "^4.1.0",
+    "inquirer": "^7.3.3",
     "node-pty": "^0.9.0",
-    "ts-node": "^8.9.1",
-    "typescript": "^3.8.3"
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.11",
-    "@types/mocha": "^7.0.2",
-    "@types/sinon": "^9.0.0",
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.3",
+    "@types/sinon": "^9.0.5",
     "chai": "^4.2.0",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.1",
-    "sinon": "^9.0.2"
+    "mocha": "^8.1.3",
+    "nyc": "^15.1.0",
+    "sinon": "^9.0.3"
   },
   "nyc": {
     "extension": [
